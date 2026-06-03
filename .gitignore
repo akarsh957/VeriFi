@@ -1,0 +1,34 @@
+# Dependency directories
+node_modules/
+
+# Environment variables / secrets
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.local
+
+# npm cache/tmp
+npm-cache/
+npm-tmp/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs
+*.log
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS Files
+.DS_Store
+Thumbs.db
