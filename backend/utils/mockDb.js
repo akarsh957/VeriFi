@@ -59,11 +59,19 @@ const logs = [
   }
 ];
 
-// Seed a default user to match the log
+// Seed default users to match testing logs and user credentials
 users.push({
   _id: 'u1',
   name: 'Alex Developer',
   email: 'alex@example.com',
+  password: 'hashed_password_placeholder',
+  createdAt: new Date()
+});
+
+users.push({
+  _id: 'u2',
+  name: 'Akarsh',
+  email: 'akarsh957@gmail.com',
   password: 'hashed_password_placeholder',
   createdAt: new Date()
 });
