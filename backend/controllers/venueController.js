@@ -1,4 +1,4 @@
-import Venue from '../models/Venue.js';
+import { Venue } from '../utils/mockDb.js';
 
 // @desc    Get all venues
 // @route   GET /api/venues
