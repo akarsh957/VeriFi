@@ -60,8 +60,24 @@ const VenueDetails = ({ venue, onBack, onOpenSpeedTest, onOpenLogin, lastLogUpda
           }`}>
             {venue.placeType}
           </span>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
-            {venue.address}
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <span>{venue.address}</span>
+            {venue.distance !== undefined && venue.distance !== null && (
+              <span style={{ 
+                color: 'var(--secondary)', 
+                fontWeight: 600,
+                fontSize: '0.75rem',
+                background: 'rgba(6, 182, 212, 0.08)',
+                padding: '2px 6px',
+                borderRadius: '4px',
+                border: '1px solid rgba(6, 182, 212, 0.15)',
+                whiteSpace: 'nowrap'
+              }}>
+                {venue.distance < 1 
+                  ? `${Math.round(venue.distance * 1000)} m away` 
+                  : `${venue.distance.toFixed(1)} km away`}
+              </span>
+            )}
           </p>
         </div>
       </div>

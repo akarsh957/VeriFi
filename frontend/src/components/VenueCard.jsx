@@ -2,7 +2,7 @@ import React from 'react';
 import { ArrowDown, ArrowUp, MapPin } from 'lucide-react';
 
 const VenueCard = ({ venue, onClick }) => {
-  const { name, address, placeType, averageDownloadSpeed, averageUploadSpeed, reliabilityScore } = venue;
+  const { name, address, placeType, averageDownloadSpeed, averageUploadSpeed, reliabilityScore, distance } = venue;
 
   // Type badge styling helper
   const getBadgeClass = (type) => {
@@ -26,6 +26,14 @@ const VenueCard = ({ venue, onClick }) => {
     return 'var(--error)';
   };
 
+  const formatDistance = (dist) => {
+    if (dist === undefined || dist === null) return null;
+    if (dist < 1) {
+      return `${Math.round(dist * 1000)} m`;
+    }
+    return `${dist.toFixed(1)} km`;
+  };
+
   return (
     <div className="venue-card glass-interactive" onClick={onClick}>
       <div className="venue-card-header">
@@ -43,8 +51,23 @@ const VenueCard = ({ venue, onClick }) => {
           whiteSpace: 'nowrap', 
           overflow: 'hidden', 
           textOverflow: 'ellipsis',
-          maxWidth: '300px'
+          maxWidth: distance !== undefined && distance !== null ? '180px' : '300px'
         }}>{address}</span>
+        {distance !== undefined && distance !== null && (
+          <span style={{ 
+            marginLeft: 'auto', 
+            color: 'var(--secondary)', 
+            fontWeight: 600,
+            fontSize: '0.8rem',
+            background: 'rgba(6, 182, 212, 0.08)',
+            padding: '2px 8px',
+            borderRadius: '4px',
+            border: '1px solid rgba(6, 182, 212, 0.15)',
+            flexShrink: 0
+          }}>
+            {formatDistance(distance)}
+          </span>
+        )}
       </div>
 
       <div className="venue-card-stats">
