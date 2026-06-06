@@ -101,9 +101,20 @@ export class User {
     return await bcrypt.compare(enteredPassword, this.password);
   }
 
-  static async findOne({ email }) {
+  static findOne({ email }) {
     const user = users.find(u => u.email === email);
-    return user ? new User(user) : null;
+    const result = user ? new User(user) : null;
+
+    const chain = {
+      select: function(fields) {
+        return this;
+      },
+      then: function(onSuccess) {
+        onSuccess(result);
+        return Promise.resolve(result);
+      }
+    };
+    return chain;
   }
 
   static async findById(id) {
