@@ -1,4 +1,5 @@
-import { SpeedTestLog, Venue } from '../utils/mockDb.js';
+import SpeedTestLog from '../models/SpeedTestLog.js';
+import Venue from '../models/Venue.js';
 
 // @desc    Create a speed test log
 // @route   POST /api/speedtests

@@ -1,4 +1,4 @@
-import { User } from '../utils/mockDb.js';
+import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
 
 // @desc    Register a new user

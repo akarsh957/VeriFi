@@ -1,5 +1,13 @@
+import mongoose from 'mongoose';
+
 const connectDB = async () => {
-  console.log('VeriFi: Running with lightweight In-Memory Mock Database. No external MongoDB service required.');
+  try {
+    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.error(`Error connecting to MongoDB: ${error.message}`);
+    process.exit(1);
+  }
 };
 
 export default connectDB;
