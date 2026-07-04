@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, MapPin, Compass, CheckCircle, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE } from '../config';
 
 const AddVenueModal = ({ 
   isOpen, 
@@ -66,7 +67,7 @@ const AddVenueModal = ({
     setIsSubmitting(true);
 
     try {
-      const res = await fetch('/api/venues', {
+      const res = await fetch(`${API_BASE}/api/venues`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

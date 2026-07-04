@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowDown, ArrowUp, Zap, Clock, User, Plus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE } from '../config';
 
 const VenueDetails = ({ venue, onBack, onOpenSpeedTest, onOpenLogin, lastLogUpdated }) => {
   const { user } = useAuth();
@@ -13,7 +14,7 @@ const VenueDetails = ({ venue, onBack, onOpenSpeedTest, onOpenLogin, lastLogUpda
     const fetchLogs = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/speedtests/venue/${venue._id}`);
+        const res = await fetch(`${API_BASE}/api/speedtests/venue/${venue._id}`);
         if (res.ok) {
           const data = await res.json();
           setLogs(data);

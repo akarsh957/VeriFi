@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE } from './config';
 import Header from './components/Header';
 import MapContainer from './components/MapContainer';
 import VenueCard from './components/VenueCard';
@@ -71,9 +72,9 @@ function App() {
   const fetchVenues = async () => {
     setLoading(true);
     try {
-      let url = '/api/venues';
+      let url = `${API_BASE}/api/venues`;
       if (activeTab === 'nearby' && centerCoords) {
-        url = `/api/venues/search?lat=${centerCoords[0]}&lng=${centerCoords[1]}&radius=5000`;
+        url = `${API_BASE}/api/venues/search?lat=${centerCoords[0]}&lng=${centerCoords[1]}&radius=5000`;
       }
       const res = await fetch(url);
       if (res.ok) {

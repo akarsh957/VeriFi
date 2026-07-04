@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Play, Save, CheckCircle, Wifi, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE } from '../config';
 
 const SpeedTestModal = ({ isOpen, onClose, venueId, onTestComplete }) => {
   const { token } = useAuth();
@@ -117,7 +118,7 @@ const SpeedTestModal = ({ isOpen, onClose, venueId, onTestComplete }) => {
     setSaveError('');
 
     try {
-      const res = await fetch('/api/speedtests', {
+      const res = await fetch(`${API_BASE}/api/speedtests`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
