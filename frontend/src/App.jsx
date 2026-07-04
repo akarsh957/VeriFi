@@ -179,6 +179,16 @@ function App() {
       return 0;
     });
 
+  // Calculate Global Analytics Metrics
+  const totalVenuesCount = venues.length;
+  const verifiedVenues = venues.filter(v => v.averageDownloadSpeed > 0);
+  const averageDownloadSpeed = verifiedVenues.length 
+    ? Math.round(verifiedVenues.reduce((acc, v) => acc + v.averageDownloadSpeed, 0) / verifiedVenues.length) 
+    : 0;
+  const fastestVenueSpeed = verifiedVenues.length 
+    ? Math.round(Math.max(...verifiedVenues.map(v => v.averageDownloadSpeed))) 
+    : 0;
+
   // Open modals handlers
   const openLogin = () => {
     setAuthModalType('login');
@@ -315,6 +325,28 @@ function App() {
                     Nearby (5 km)
                   </button>
                 </div>
+
+                {/* Global Analytics Overview */}
+                <div style={{ padding: '20px 20px 0 20px' }}>
+                  <div className="dashboard-title-row">
+                    <span className="dashboard-title">Global Overview</span>
+                  </div>
+                  <div className="dashboard-metrics-grid">
+                    <div className="dashboard-metric-card">
+                      <span className="dashboard-metric-val">{totalVenuesCount}</span>
+                      <span className="dashboard-metric-lbl">Total Spots</span>
+                    </div>
+                    <div className="dashboard-metric-card">
+                      <span className="dashboard-metric-val">{averageDownloadSpeed} <span style={{fontSize: '0.75rem', fontWeight: 500}}>Mb/s</span></span>
+                      <span className="dashboard-metric-lbl">Avg Speed</span>
+                    </div>
+                    <div className="dashboard-metric-card">
+                      <span className="dashboard-metric-val" style={{color: 'var(--secondary)'}}>{fastestVenueSpeed} <span style={{fontSize: '0.75rem', fontWeight: 500}}>Mb/s</span></span>
+                      <span className="dashboard-metric-lbl">Fastest Local</span>
+                    </div>
+                  </div>
+                </div>
+
 
                 {/* Search & Filter widgets */}
                 <div className="search-filter-container">

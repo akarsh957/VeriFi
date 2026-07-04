@@ -45,21 +45,44 @@ const VenueDetails = ({ venue, onBack, onOpenSpeedTest, onOpenLogin, lastLogUpda
     }
   };
 
+  // Speed level badge classification helper
+  const getSpeedBadge = (dlSpeed) => {
+    if (!dlSpeed || dlSpeed === 0) {
+      return { 
+        label: 'Unverified', 
+        className: 'badge-slow',
+        style: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-muted)' } 
+      };
+    }
+    if (dlSpeed >= 250) return { label: 'Gigabit+', className: 'badge-gigabit' };
+    if (dlSpeed >= 100) return { label: 'Excellent', className: 'badge-excellent' };
+    if (dlSpeed >= 50) return { label: 'Good', className: 'badge-good' };
+    if (dlSpeed >= 15) return { label: 'Basic', className: 'badge-basic' };
+    return { label: 'Slow', className: 'badge-slow' };
+  };
+
+  const speedBadge = getSpeedBadge(venue.averageDownloadSpeed);
+
   return (
     <div className="venue-details">
-      <div className="details-header">
+      <div className="details-header" style={{ background: 'rgba(13, 9, 29, 0.3)' }}>
         <button className="back-link" onClick={onBack}>
           <ArrowLeft size={16} />
           <span>Back to list</span>
         </button>
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           <h2 style={{ fontSize: '1.4rem', fontWeight: 800, margin: '6px 0 2px' }}>{venue.name}</h2>
-          <span className={`venue-type-badge ${
-            venue.placeType === 'Cafe' ? 'type-cafe' : 
-            venue.placeType === 'Hotel' ? 'type-hotel' : 'type-coworking'
-          }`}>
-            {venue.placeType}
-          </span>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            <span className={`venue-type-badge ${
+              venue.placeType === 'Cafe' ? 'type-cafe' : 
+              venue.placeType === 'Hotel' ? 'type-hotel' : 'type-coworking'
+            }`}>
+              {venue.placeType}
+            </span>
+            <span className={`speed-quality-badge ${speedBadge.className}`} style={speedBadge.style}>
+              {speedBadge.label}
+            </span>
+          </div>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <span>{venue.address}</span>
             {venue.distance !== undefined && venue.distance !== null && (
@@ -85,7 +108,7 @@ const VenueDetails = ({ venue, onBack, onOpenSpeedTest, onOpenLogin, lastLogUpda
       <div className="details-body">
         {/* Aggregated Stats Overview */}
         <div>
-          <h3 style={{ fontSize: '0.95rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <h3 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '0.5px', fontWeight: 700 }}>
             Performance Dashboard
           </h3>
           <div className="stats-grid">
@@ -116,7 +139,7 @@ const VenueDetails = ({ venue, onBack, onOpenSpeedTest, onOpenLogin, lastLogUpda
         </div>
 
         {/* Action Button */}
-        <button className="btn btn-primary" onClick={handleRunSpeedTest} style={{ width: '100%', padding: '12px' }}>
+        <button className="btn btn-primary" onClick={handleRunSpeedTest} style={{ width: '100%', padding: '12px', fontSize: '0.95rem' }}>
           <Plus size={16} />
           Verify WiFi Speed
         </button>
@@ -124,8 +147,8 @@ const VenueDetails = ({ venue, onBack, onOpenSpeedTest, onOpenLogin, lastLogUpda
         {/* Logs Timeline */}
         <div>
           <div className="log-section-title">
-            <span>Speed Verification History</span>
-            <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Speed Verification History</span>
+            <span style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
               {logs.length} tests logged
             </span>
           </div>
@@ -146,43 +169,51 @@ const VenueDetails = ({ venue, onBack, onOpenSpeedTest, onOpenLogin, lastLogUpda
             </div>
           ) : (
             <div className="logs-timeline">
-              {logs.map((log) => (
-                <div key={log._id} className="log-timeline-card">
-                  <div className="log-card-meta">
-                    <div className="log-user-info">
-                      <div className="avatar" style={{ width: '18px', height: '18px', fontSize: '0.65rem' }}>
-                        {log.userId?.name ? log.userId.name.charAt(0).toUpperCase() : 'U'}
+              {logs.map((log) => {
+                const logBadge = getSpeedBadge(log.downloadSpeed);
+                return (
+                  <div key={log._id} className="log-timeline-card" style={{ transition: 'var(--transition-fast)' }}>
+                    <div className="log-card-meta">
+                      <div className="log-user-info">
+                        <div className="avatar" style={{ width: '20px', height: '20px', fontSize: '0.7rem' }}>
+                          {log.userId?.name ? log.userId.name.charAt(0).toUpperCase() : 'U'}
+                        </div>
+                        <span style={{ fontWeight: 600 }}>{log.userId?.name || 'Anonymous'}</span>
                       </div>
-                      <span>{log.userId?.name || 'Anonymous'}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className={`speed-quality-badge ${logBadge.className}`} style={{ ...logBadge.style, fontSize: '0.65rem', padding: '1px 6px' }}>
+                          {logBadge.label}
+                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-muted)' }}>
+                          <Clock size={12} />
+                          <span>{new Date(log.timestamp).toLocaleDateString()}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Clock size={12} />
-                      <span>{new Date(log.timestamp).toLocaleDateString()}</span>
+                    
+                    <div className="log-card-speeds">
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span className="speed-label" style={{ fontSize: '0.6rem' }}>Download</span>
+                        <span className="log-speed-val" style={{ color: 'var(--secondary)' }}>
+                          {log.downloadSpeed} Mbps
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span className="speed-label" style={{ fontSize: '0.6rem' }}>Upload</span>
+                        <span className="log-speed-val" style={{ color: 'var(--primary)' }}>
+                          {log.uploadSpeed} Mbps
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span className="speed-label" style={{ fontSize: '0.6rem' }}>Latency</span>
+                        <span className="log-speed-val" style={{ color: 'var(--accent)' }}>
+                          {log.ping} ms
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  
-                  <div className="log-card-speeds">
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span className="speed-label" style={{ fontSize: '0.6rem' }}>Download</span>
-                      <span className="log-speed-val" style={{ color: 'var(--secondary)' }}>
-                        {log.downloadSpeed} Mbps
-                      </span>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span className="speed-label" style={{ fontSize: '0.6rem' }}>Upload</span>
-                      <span className="log-speed-val" style={{ color: 'var(--primary)' }}>
-                        {log.uploadSpeed} Mbps
-                      </span>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span className="speed-label" style={{ fontSize: '0.6rem' }}>Latency</span>
-                      <span className="log-speed-val" style={{ color: 'var(--accent)' }}>
-                        {log.ping} ms
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

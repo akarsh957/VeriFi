@@ -34,14 +34,40 @@ const VenueCard = ({ venue, onClick }) => {
     return `${dist.toFixed(1)} km`;
   };
 
+  // Speed level badge classification
+  const getSpeedBadge = (dlSpeed) => {
+    if (!dlSpeed || dlSpeed === 0) {
+      return { 
+        label: 'Unverified', 
+        className: 'badge-slow',
+        style: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-muted)' } 
+      };
+    }
+    if (dlSpeed >= 250) return { label: 'Gigabit+', className: 'badge-gigabit' };
+    if (dlSpeed >= 100) return { label: 'Excellent', className: 'badge-excellent' };
+    if (dlSpeed >= 50) return { label: 'Good', className: 'badge-good' };
+    if (dlSpeed >= 15) return { label: 'Basic', className: 'badge-basic' };
+    return { label: 'Slow', className: 'badge-slow' };
+  };
+
+  const speedBadge = getSpeedBadge(averageDownloadSpeed);
+
   return (
     <div className="venue-card glass-interactive" onClick={onClick}>
       <div className="venue-card-header">
-        <div>
-          <h3 className="venue-title">{name}</h3>
-          <span className={`venue-type-badge ${getBadgeClass(placeType)}`}>
-            {placeType}
-          </span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
+          <h3 className="venue-title" style={{ margin: 0 }}>{name}</h3>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            <span className={`venue-type-badge ${getBadgeClass(placeType)}`}>
+              {placeType}
+            </span>
+            <span 
+              className={`speed-quality-badge ${speedBadge.className}`}
+              style={speedBadge.style}
+            >
+              {speedBadge.label}
+            </span>
+          </div>
         </div>
       </div>
 

@@ -1,44 +1,48 @@
 :root {
-  /* Colors */
-  --bg-main: #0B0816;
-  --bg-card: #15102A;
-  --bg-card-hover: #1E1838;
-  --bg-input: #0D0A1C;
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-focus: #06B6D4;
+  /* HSL Tailored Theme Colors */
+  --bg-main: #07050e;
+  --bg-card: rgba(18, 14, 38, 0.65);
+  --bg-card-hover: rgba(26, 20, 56, 0.8);
+  --bg-input: rgba(11, 8, 26, 0.85);
+  --border-color: rgba(255, 255, 255, 0.06);
+  --border-glow: rgba(6, 182, 212, 0.2);
   
-  --primary: #7C3AED;
-  --primary-glow: rgba(124, 58, 237, 0.4);
-  --secondary: #06B6D4;
-  --secondary-glow: rgba(6, 182, 212, 0.4);
-  --accent: #EC4899;
-  --accent-glow: rgba(236, 72, 153, 0.4);
+  --primary: #8b5cf6;
+  --primary-rgb: 139, 92, 246;
+  --primary-glow: rgba(139, 92, 246, 0.35);
   
-  --text-primary: #F3F4F6;
-  --text-secondary: #9CA3AF;
-  --text-muted: #6B7280;
+  --secondary: #06b6d4;
+  --secondary-rgb: 6, 182, 212;
+  --secondary-glow: rgba(6, 182, 212, 0.35);
   
-  --success: #10B981;
-  --warning: #F59E0B;
-  --error: #EF4444;
+  --accent: #ec4899;
+  --accent-rgb: 236, 72, 153;
+  --accent-glow: rgba(236, 72, 153, 0.35);
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
 
   /* Typography */
-  --font-sans: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-glow: 0 0 15px rgba(6, 182, 212, 0.15);
-  --shadow-glow-purple: 0 0 20px rgba(124, 58, 237, 0.25);
+  /* Shadows & Glows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 20px rgba(6, 182, 212, 0.12);
+  --shadow-glow-purple: 0 0 25px rgba(139, 92, 246, 0.15);
   
-  /* Transitions */
-  --transition-all: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-all: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Base resets */
+/* Reset & Base Setup */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -53,75 +57,105 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  position: relative;
 }
 
-/* Custom scrollbar */
+/* Premium blurred backdrop blobs */
+body::before,
+body::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  z-index: -1;
+  filter: blur(120px);
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+body::before {
+  top: 10%;
+  left: -100px;
+  background: radial-gradient(circle, var(--primary) 0%, transparent 80%);
+}
+
+body::after {
+  bottom: 10%;
+  right: -100px;
+  background: radial-gradient(circle, var(--secondary) 0%, transparent 80%);
+}
+
+/* Scrollbar Styling */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-main);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  transition: var(--transition-fast);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.18);
 }
 
-/* Glassmorphism Classes */
+/* Glassmorphism primitives */
 .glass {
-  background: rgba(21, 16, 42, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
 }
 
 .glass-interactive {
-  background: rgba(21, 16, 42, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
   transition: var(--transition-all);
 }
 
 .glass-interactive:hover {
-  background: rgba(30, 24, 56, 0.8);
-  border-color: rgba(6, 182, 212, 0.3);
+  background: var(--bg-card-hover);
+  border-color: rgba(6, 182, 212, 0.25);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-glow);
+  box-shadow: var(--shadow-glow), var(--shadow-lg);
 }
 
-/* Leaflet Dark Theme Overrides */
+/* Leaflet Custom Styling Override */
 .leaflet-container {
   background: var(--bg-main) !important;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-lg);
-  width: 100%;
-  height: 100%;
-  z-index: 1;
 }
 
-/* Invert map tiles for a beautiful night mode */
+/* Night Map Inversion Filter */
 .leaflet-tile-container {
-  filter: invert(100%) hue-rotate(180deg) brightness(90%) contrast(90%);
+  filter: invert(100%) hue-rotate(180deg) brightness(85%) contrast(90%);
 }
 
 .leaflet-bar {
   border: 1px solid var(--border-color) !important;
-  box-shadow: none !important;
-  background: var(--bg-card) !important;
+  box-shadow: var(--shadow-md) !important;
+  background: rgba(18, 14, 38, 0.85) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 8px !important;
+  overflow: hidden;
 }
 
 .leaflet-bar a {
-  background: var(--bg-card) !important;
+  background: transparent !important;
   color: var(--text-primary) !important;
   border-bottom: 1px solid var(--border-color) !important;
   transition: var(--transition-fast);
@@ -133,22 +167,29 @@ body {
 }
 
 .leaflet-popup-content-wrapper {
-  background: var(--bg-card) !important;
+  background: rgba(15, 12, 32, 0.95) !important;
+  backdrop-filter: blur(12px);
   color: var(--text-primary) !important;
   border: 1px solid var(--border-color);
   border-radius: 12px !important;
-  padding: 4px;
+  padding: 6px;
+  box-shadow: var(--shadow-glow-purple) !important;
 }
 
 .leaflet-popup-tip {
-  background: var(--bg-card) !important;
+  background: rgba(15, 12, 32, 0.95) !important;
   border: 1px solid var(--border-color);
 }
 
-/* Toast Notifications */
+.leaflet-popup-close-button {
+  color: var(--text-secondary) !important;
+  padding: 6px 8px 0 0 !important;
+}
+
+/* Toast Notification Overlay */
 .toast-container {
   position: fixed;
-  bottom: 24px;
+  top: 24px;
   right: 24px;
   display: flex;
   flex-direction: column;
@@ -161,39 +202,42 @@ body {
   align-items: center;
   gap: 12px;
   padding: 16px 20px;
-  border-radius: 10px;
-  box-shadow: var(--shadow-lg);
-  font-weight: 500;
-  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  min-width: 300px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg), 0 0 15px rgba(0,0,0,0.5);
+  font-weight: 600;
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  min-width: 320px;
 }
 
 .toast-success {
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid var(--success);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.4);
   color: #a7f3d0;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
 }
 
 .toast-error {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid var(--error);
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
   color: #fca5a5;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
 }
 
 .toast-info {
-  background: rgba(6, 182, 212, 0.15);
-  border: 1px solid var(--secondary);
+  background: rgba(6, 182, 212, 0.12);
+  border: 1px solid rgba(6, 182, 212, 0.4);
   color: #cffafe;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
 }
 
 /* Animations */
-@keyframes slideIn {
+@keyframes slideInRight {
   from {
-    transform: translateY(100%) scale(0.9);
+    transform: translateX(120%) scale(0.9);
     opacity: 0;
   }
   to {
-    transform: translateY(0) scale(1);
+    transform: translateX(0) scale(1);
     opacity: 1;
   }
 }
@@ -205,7 +249,7 @@ body {
 
 @keyframes scaleUp {
   from {
-    transform: scale(0.95);
+    transform: scale(0.96);
     opacity: 0;
   }
   to {
@@ -214,32 +258,30 @@ body {
   }
 }
 
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(6, 182, 212, 0.35);
-  }
-}
-
 @keyframes rotate-slow {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-/* Utility layout styles */
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(0.95); opacity: 0.5; }
+}
+
+/* Common Layout Utilities */
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   background-color: var(--bg-main);
   position: relative;
+  overflow: hidden;
 }
 
 .main-content {
   display: grid;
-  grid-template-columns: 420px 1fr;
+  grid-template-columns: 440px 1fr;
   height: calc(100vh - 76px);
   overflow: hidden;
   position: relative;
@@ -248,7 +290,7 @@ body {
 @media (max-width: 1024px) {
   .main-content {
     grid-template-columns: 1fr;
-    grid-template-rows: 400px 1fr;
+    grid-template-rows: 450px 1fr;
     height: auto;
     overflow: visible;
   }
@@ -258,7 +300,9 @@ body {
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border-color);
-  background: rgba(11, 8, 22, 0.95);
+  background: rgba(7, 5, 14, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   overflow-y: auto;
   z-index: 10;
   position: relative;
@@ -268,10 +312,11 @@ body {
   position: relative;
   height: 100%;
   width: 100%;
+  padding: 16px;
 }
 
 @media (max-width: 1024px) {
   .map-pane {
-    height: 400px;
+    height: 450px;
   }
 }

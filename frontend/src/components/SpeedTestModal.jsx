@@ -30,10 +30,11 @@ const SpeedTestModal = ({ isOpen, onClose, venueId, onTestComplete }) => {
   const startSpeedTest = () => {
     setTestState('ping');
     setCurrentUnit('ms');
+    setSaveError('');
     
     let counter = 0;
     
-    // Phase 1: Ping Latency (takes 2 seconds)
+    // Phase 1: Ping Latency (takes ~1.8 seconds)
     animRef.current = setInterval(() => {
       counter += 1;
       const simulatedPing = Math.floor(15 + Math.random() * 20); // 15-35 ms
@@ -47,7 +48,7 @@ const SpeedTestModal = ({ isOpen, onClose, venueId, onTestComplete }) => {
     }, 120);
   };
 
-  // Phase 2: Download Speed (takes 4 seconds)
+  // Phase 2: Download Speed (takes ~3.5 seconds)
   const runDownloadTest = () => {
     setTestState('download');
     setCurrentUnit('Mbps');
@@ -79,7 +80,7 @@ const SpeedTestModal = ({ isOpen, onClose, venueId, onTestComplete }) => {
     }, 100);
   };
 
-  // Phase 3: Upload Speed (takes 4 seconds)
+  // Phase 3: Upload Speed (takes ~3.5 seconds)
   const runUploadTest = () => {
     setTestState('upload');
     setCurrentUnit('Mbps');
@@ -182,11 +183,55 @@ const SpeedTestModal = ({ isOpen, onClose, venueId, onTestComplete }) => {
     return 'var(--error)'; // Red for slow speed
   };
 
+  // Wifi connection quality rating analyzer
+  const getWifiRating = (dlSpeed) => {
+    if (dlSpeed >= 250) {
+      return {
+        title: 'Gigabit Connected',
+        desc: 'Enterprise-grade speed. Perfect for intensive tasks, raw builds, and real-time streaming.',
+        color: 'var(--success)',
+        badgeClass: 'badge-gigabit'
+      };
+    }
+    if (dlSpeed >= 100) {
+      return {
+        title: 'Excellent / Zoom-Ready',
+        desc: 'Ideal for simultaneous HD streaming, video calls, and complex cloud development work.',
+        color: 'var(--secondary)',
+        badgeClass: 'badge-excellent'
+      };
+    }
+    if (dlSpeed >= 50) {
+      return {
+        title: 'Good / Work-Ready',
+        desc: 'Capable of solid multitasking, remote work, standard video calling, and casual gaming.',
+        color: 'var(--primary)',
+        badgeClass: 'badge-good'
+      };
+    }
+    if (dlSpeed >= 15) {
+      return {
+        title: 'Basic Connectivity',
+        desc: 'Supports basic email, browsing, and messaging. High-def streaming may buffer.',
+        color: 'var(--warning)',
+        badgeClass: 'badge-basic'
+      };
+    }
+    return {
+      title: 'Slow / Poor Connection',
+      desc: 'Very low bandwidth. May experience frequent timeouts and network latency.',
+      color: 'var(--error)',
+      badgeClass: 'badge-slow'
+    };
+  };
+
+  const wifiRating = getWifiRating(downloadSpeed);
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div 
         className="modal-content-glass glass" 
-        style={{ width: '440px' }}
+        style={{ width: '460px' }}
         onClick={(e) => e.stopPropagation()}
       >
         <button className="modal-close-btn" onClick={onClose} disabled={testState === 'saving' || testState === 'ping' || testState === 'download' || testState === 'upload'}>
@@ -262,17 +307,17 @@ const SpeedTestModal = ({ isOpen, onClose, venueId, onTestComplete }) => {
             {/* Central Info Display */}
             <div className="speedometer-center">
               <span className="speed-number-val">
-                {testState === 'finished' ? '-' : Math.round(currentDisplayVal)}
+                {testState === 'finished' ? downloadSpeed : Math.round(currentDisplayVal)}
               </span>
               <span className="speed-number-unit">
-                {testState === 'finished' ? 'Complete' : currentUnit}
+                {testState === 'finished' ? 'Mbps' : currentUnit}
               </span>
             </div>
           </div>
 
           {/* Speed Status text */}
           <div className="speed-test-status">
-            {testState === 'idle' && 'Ready to Test'}
+            {testState === 'idle' && 'Ready to Verify'}
             {testState === 'ping' && 'Testing Connection Ping...'}
             {testState === 'download' && 'Measuring Download Speed...'}
             {testState === 'upload' && 'Measuring Upload Speed...'}
@@ -300,6 +345,35 @@ const SpeedTestModal = ({ isOpen, onClose, venueId, onTestComplete }) => {
               <div className="speed-test-metric-lbl">Upload</div>
             </div>
           </div>
+
+          {/* Wifi rating card */}
+          {testState === 'finished' && (
+            <div 
+              style={{
+                width: '100%',
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid var(--border-color)',
+                borderRadius: '12px',
+                padding: '14px 16px',
+                textAlign: 'left',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontWeight: 800, fontSize: '0.95rem', color: wifiRating.color }}>
+                  {wifiRating.title}
+                </span>
+                <span className={`speed-quality-badge ${wifiRating.badgeClass}`}>
+                  Quality Rating
+                </span>
+              </div>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.4 }}>
+                {wifiRating.desc}
+              </p>
+            </div>
+          )}
 
           {/* Action Trigger Buttons */}
           <div style={{ width: '100%', display: 'flex', gap: '12px' }}>
