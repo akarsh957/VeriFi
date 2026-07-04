@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Route imports
 import userRoutes from './routes/userRoutes.js';
@@ -28,10 +30,21 @@ app.use('/api/auth', userRoutes);
 app.use('/api/venues', venueRoutes);
 app.use('/api/speedtests', speedTestRoutes);
 
-// Simple home route
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the VerifyFi API' });
-});
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'));
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.json({ message: 'Welcome to the VerifyFi API' });
+  });
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {
