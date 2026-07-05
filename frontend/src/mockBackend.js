@@ -321,10 +321,11 @@ window.fetch = async function (input, init) {
   try {
     const response = await originalFetch.apply(this, arguments);
     
-    // Detect Render custom 404 / no-server
-    const isRenderError = response.status === 404 && response.headers.get('x-render-routing') === 'no-server';
+    // Detect if API route is not found (404) or server errors (5xx)
+    const isNotFoundError = response.status === 404;
+    const isServerError = response.status >= 500;
     
-    if (!isRenderError && response.status < 500) {
+    if (!isNotFoundError && !isServerError) {
       return response;
     }
     
