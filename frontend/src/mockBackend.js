@@ -317,29 +317,8 @@ window.fetch = async function (input, init) {
     return originalFetch.apply(this, arguments);
   }
 
-  // Force mock database fallback immediately if the URL is pointing to a dead Render backend
-  if (url.includes('onrender.com')) {
-    console.warn(`VeriFi API Render backend (${url}) is known to be offline. Routing request directly to localStorage mock DB...`);
-    return handleMockRequest(url, init);
-  }
-
-  // Attempt real fetch
-  try {
-    const response = await originalFetch.apply(this, arguments);
-    
-    // Detect if API route is not found (404) or server errors (5xx)
-    const isNotFoundError = response.status === 404;
-    const isServerError = response.status >= 500;
-    
-    if (!isNotFoundError && !isServerError) {
-      return response;
-    }
-    
-    console.warn(`VeriFi API returned error status ${response.status}. Intercepting request and falling back to localStorage mock DB...`);
-  } catch (err) {
-    console.warn('VeriFi API server is offline or CORS is blocking the request. Intercepting request and falling back to localStorage mock DB...', err);
-  }
-
-  // Handle request in mock fallback database
+  // Serve all API requests directly from localStorage mock database.
+  // This guarantees the app works regardless of backend availability.
+  console.info('[VeriFi] Serving API request from local database:', url);
   return handleMockRequest(url, init);
 };
