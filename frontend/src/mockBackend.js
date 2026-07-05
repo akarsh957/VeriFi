@@ -317,6 +317,12 @@ window.fetch = async function (input, init) {
     return originalFetch.apply(this, arguments);
   }
 
+  // Force mock database fallback immediately if the URL is pointing to a dead Render backend
+  if (url.includes('onrender.com')) {
+    console.warn(`VeriFi API Render backend (${url}) is known to be offline. Routing request directly to localStorage mock DB...`);
+    return handleMockRequest(url, init);
+  }
+
   // Attempt real fetch
   try {
     const response = await originalFetch.apply(this, arguments);
